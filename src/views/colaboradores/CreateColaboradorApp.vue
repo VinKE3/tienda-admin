@@ -1,7 +1,7 @@
 <template>
   <div>
-    <Sidebar />
     <TopNav />
+    <Sidebar />
     <div class="main-content">
       <div class="container-fluid">
         <div class="row justify-content-center">
@@ -214,8 +214,8 @@ export default {
   },
   mounted() {},
   components: {
-    Sidebar,
-    TopNav,
+    TopNav: () => import("@/components/TopNav.vue"),
+    Sidebar: () => import("@/components/Sidebar.vue"),
   },
 };
 </script>

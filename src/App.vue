@@ -1,14 +1,13 @@
 <script>
-import SideBar from "@/components/Sidebar.vue";
+import Sidebar from "@/components/Sidebar.vue";
 export default {
   components: {
-    SideBar,
+    Sidebar,
   },
 };
 </script>
 <template>
   <div id="app">
-    <!-- <SideBar /> -->
     <notifications group="foo" />
     <router-view />
   </div>

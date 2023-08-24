@@ -1,7 +1,7 @@
 <template>
   <div>
-    <Sidebar />
     <TopNav />
+    <Sidebar />
     <div class="main-content">
       <div class="container-fluid">
         <div class="row justify-content-center">
@@ -86,104 +86,67 @@
                       <thead>
                         <tr>
                           <th>
-                            <a
-                              class="list-sort text-muted"
-                              data-sort="item-name"
-                              href="#"
-                              >Name</a
-                            >
+                            <a class="list-sort text-muted">Nombres</a>
                           </th>
                           <th>
-                            <a
-                              class="list-sort text-muted"
-                              data-sort="item-title"
-                              href="#"
-                              >Job title</a
-                            >
+                            <a class="list-sort text-muted">Rol</a>
                           </th>
                           <th>
-                            <a
-                              class="list-sort text-muted"
-                              data-sort="item-email"
-                              href="#"
-                              >Email</a
-                            >
+                            <a class="list-sort text-muted">Email</a>
                           </th>
                           <th>
-                            <a
-                              class="list-sort text-muted"
-                              data-sort="item-phone"
-                              href="#"
-                              >Phone</a
-                            >
+                            <a class="list-sort text-muted">Estado</a>
                           </th>
                           <th>
-                            <a
-                              class="list-sort text-muted"
-                              data-sort="item-score"
-                              href="#"
-                              >Lead score</a
-                            >
-                          </th>
-                          <th colspan="2">
-                            <a
-                              class="list-sort text-muted"
-                              data-sort="item-company"
-                              href="#"
-                              >Company</a
-                            >
+                            <a class="list-sort text-muted">Acciones</a>
                           </th>
                         </tr>
                       </thead>
-                      <tbody class="list fs-base">
-                        <tr>
+
+                      <paginate
+                        tag="tbody"
+                        ref="colaboradores"
+                        name="colaboradores"
+                        :list="colaboradores"
+                        peer="1"
+                        class="list fs-base"
+                      >
+                        <tr v-for="item in colaboradores">
                           <td>
                             <!-- Avatar -->
                             <div class="avatar avatar-xs align-middle me-2">
                               <img
                                 class="avatar-img rounded-circle"
-                                src="assets/img/avatars/profiles/avatar-1.jpg"
+                                src="/assets/img/avatar-1.jpg"
                                 alt="..."
                               />
                             </div>
-                            <a
-                              class="item-name text-reset"
-                              href="profile-posts.html"
-                              >Dianna Smiley</a
+                            <a class="item-name text-reset"
+                              >{{ item.nombres }} {{ item.apellidos }}</a
                             >
                           </td>
                           <td>
                             <!-- Text -->
-                            <span class="item-title">Designer</span>
+                            <span class="item-title">{{ item.rol }}</span>
                           </td>
                           <td>
                             <!-- Email -->
-                            <a
-                              class="item-email text-reset"
-                              href="mailto:john.doe@company.com"
-                              >diana.smiley@company.com</a
-                            >
+                            <a class="item-email text-reset">{{
+                              item.email
+                            }}</a>
                           </td>
-                          <td>
-                            <!-- Phone -->
-                            <a
-                              class="item-phone text-reset"
-                              href="tel:1-123-456-4890"
-                              >(988) 568-3568</a
-                            >
-                          </td>
+
                           <td>
                             <!-- Badge -->
-                            <span class="item-score badge bg-danger-soft"
-                              >1/10</span
+                            <span
+                              v-if="!item.estado"
+                              class="item-score badge bg-danger-soft"
+                              >Desactivado</span
                             >
-                          </td>
-                          <td>
-                            <!-- Link -->
-                            <a
-                              class="item-company text-reset"
-                              href="team-overview.html"
-                              >Twitter</a
+                            <span
+                              v-if="item.estado"
+                              class="item-score badge bg-success-soft"
+                              >Activado</span
                             >
                           </td>
                           <td class="text-end">
@@ -211,82 +174,7 @@
                             </div>
                           </td>
                         </tr>
-                        <tr>
-                          <td>
-                            <!-- Avatar -->
-                            <div class="avatar avatar-xs align-middle me-2">
-                              <img
-                                class="avatar-img rounded-circle"
-                                src="assets/img/avatars/profiles/avatar-2.jpg"
-                                alt="..."
-                              />
-                            </div>
-                            <a
-                              class="item-name text-reset"
-                              href="profile-posts.html"
-                              >Ab Hadley</a
-                            >
-                          </td>
-                          <td class="">
-                            <!-- Text -->
-                            <span class="item-title">Developer</span>
-                          </td>
-                          <td>
-                            <!-- Email -->
-                            <a
-                              class="item-email text-reset"
-                              href="mailto:john.doe@company.com"
-                              >ab.hadley@company.com</a
-                            >
-                          </td>
-                          <td>
-                            <!-- Phone -->
-                            <a
-                              class="item-phone text-reset"
-                              href="tel:1-123-456-7890"
-                              >(650) 430-9876</a
-                            >
-                          </td>
-                          <td>
-                            <!-- Badge -->
-                            <span class="item-score badge bg-success-soft"
-                              >8/10</span
-                            >
-                          </td>
-                          <td>
-                            <!-- Link -->
-                            <a
-                              class="item-company text-reset"
-                              href="team-overview.html"
-                              >Google</a
-                            >
-                          </td>
-                          <td class="text-end">
-                            <!-- Dropdown -->
-                            <div class="dropdown">
-                              <a
-                                class="dropdown-ellipses dropdown-toggle"
-                                href="#"
-                                role="button"
-                                data-bs-toggle="dropdown"
-                                aria-haspopup="true"
-                                aria-expanded="false"
-                              >
-                                <i class="fe fe-more-vertical"></i>
-                              </a>
-                              <div class="dropdown-menu dropdown-menu-end">
-                                <a href="#!" class="dropdown-item"> Action </a>
-                                <a href="#!" class="dropdown-item">
-                                  Another action
-                                </a>
-                                <a href="#!" class="dropdown-item">
-                                  Something else here
-                                </a>
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
-                      </tbody>
+                      </paginate>
                     </table>
                   </div>
                   <div class="card-footer d-flex justify-content-between">
@@ -305,6 +193,7 @@
                     <ul
                       class="list-pagination pagination pagination-tabs card-pagination"
                     ></ul>
+                    <paginate-links for="items"></paginate-links>
 
                     <!-- Pagination (next) -->
                     <ul
@@ -316,51 +205,6 @@
                         </a>
                       </li>
                     </ul>
-
-                    <!-- Alert -->
-                    <div
-                      class="list-alert alert alert-dark alert-dismissible border fade"
-                      role="alert"
-                    >
-                      <!-- Content -->
-                      <div class="row align-items-center">
-                        <div class="col">
-                          <!-- Checkbox -->
-                          <div class="form-check">
-                            <input
-                              class="form-check-input"
-                              id="listAlertCheckbox"
-                              type="checkbox"
-                              checked
-                              disabled
-                            />
-                            <label
-                              class="form-check-label text-white"
-                              for="listAlertCheckbox"
-                            >
-                              <span class="list-alert-count">0</span> deal(s)
-                            </label>
-                          </div>
-                        </div>
-                        <div class="col-auto me-n3">
-                          <!-- Button -->
-                          <button class="btn btn-sm btn-white-20">Edit</button>
-
-                          <!-- Button -->
-                          <button class="btn btn-sm btn-white-20">
-                            Delete
-                          </button>
-                        </div>
-                      </div>
-                      <!-- / .row -->
-
-                      <!-- Close -->
-                      <button
-                        type="button"
-                        class="list-alert-close btn-close"
-                        aria-label="Close"
-                      ></button>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -379,9 +223,31 @@ import TopNav from "@/components/TopNav.vue";
 import axios from "axios";
 export default {
   name: "IndexColaboradorApp",
+  data() {
+    return {
+      colaboradores: [],
+      paginate: ["colaboradores"],
+    };
+  },
   components: {
-    Sidebar,
-    TopNav,
+    Sidebar: () => import("@/components/Sidebar.vue"),
+    TopNav: () => import("@/components/TopNav.vue"),
+  },
+  beforeMount() {
+    axios
+      .get(this.$url + "/listar_usuario_admin", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: this.$token,
+        },
+      })
+      .then((result) => {
+        this.colaboradores = result.data;
+        console.log(result.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
 };
 </script>
