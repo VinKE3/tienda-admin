@@ -1,8 +1,8 @@
 <template>
   <div>
-    <TopNav />
     <Sidebar />
     <div class="main-content">
+      <TopNav />
       <div class="container-fluid">
         <div class="row justify-content-center">
           <div class="col-12 col-lg-10 col-xl-8">
@@ -60,7 +60,8 @@
                             <input
                               class="form-control list-search"
                               type="search"
-                              placeholder="Search"
+                              placeholder="Buscar Colaborador"
+                              v-model="filtro"
                             />
                             <span class="input-group-text">
                               <i class="fe fe-search"></i>
@@ -71,7 +72,11 @@
 
                       <div class="col-auto">
                         <!-- Dropdown -->
-                        <button class="btn btn-sm btn-white" type="button">
+                        <button
+                          class="btn btn-sm btn-white"
+                          type="button"
+                          v-on:click="filtrar()"
+                        >
                           <i class="fe fe-sliders me-1"></i> Filter
                           <span class="badge bg-primary ms-1 d-none">0</span>
                         </button>
@@ -104,14 +109,15 @@
                       </thead>
 
                       <paginate
+                        v-if="!load_data"
                         tag="tbody"
                         ref="colaboradores"
                         name="colaboradores"
                         :list="colaboradores"
-                        peer="1"
+                        :per="perPage"
                         class="list fs-base"
                       >
-                        <tr v-for="item in colaboradores">
+                        <tr v-for="item in paginated('colaboradores')">
                           <td>
                             <!-- Avatar -->
                             <div class="avatar avatar-xs align-middle me-2">
@@ -175,6 +181,13 @@
                           </td>
                         </tr>
                       </paginate>
+                      <tr v-if="load_data">
+                        <td colspan="5" class="text-center">
+                          <div class="spinner-border mt-5 mb-5" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                          </div>
+                        </td>
+                      </tr>
                     </table>
                   </div>
                   <div class="card-footer d-flex justify-content-between">
@@ -183,24 +196,39 @@
                       class="list-pagination-prev pagination pagination-tabs card-pagination"
                     >
                       <li class="page-item">
-                        <a class="page-link ps-0 pe-4 border-end" href="#">
+                        <a
+                          class="page-link ps-0 pe-4 border-end"
+                          v-on:click="goPrev()"
+                        >
                           <i class="fe fe-arrow-left me-1"></i> Prev
                         </a>
                       </li>
                     </ul>
 
                     <!-- Pagination -->
-                    <ul
-                      class="list-pagination pagination pagination-tabs card-pagination"
-                    ></ul>
-                    <paginate-links for="items"></paginate-links>
+                    <paginate-links
+                      @change="onLangsPageChange"
+                      for="colaboradores"
+                      :classes="{
+                        ul: [
+                          'list-pagination',
+                          'pagination',
+                          'pagination-tabs',
+                          'card-pagination',
+                        ],
+                        a: ['page'],
+                      }"
+                    ></paginate-links>
 
                     <!-- Pagination (next) -->
                     <ul
                       class="list-pagination-next pagination pagination-tabs card-pagination"
                     >
                       <li class="page-item">
-                        <a class="page-link ps-4 pe-0 border-start" href="#">
+                        <a
+                          class="page-link ps-4 pe-0 border-start"
+                          v-on:click="goNext()"
+                        >
                           Next <i class="fe fe-arrow-right ms-1"></i>
                         </a>
                       </li>
@@ -226,28 +254,75 @@ export default {
   data() {
     return {
       colaboradores: [],
+      colaboradores_const: [],
       paginate: ["colaboradores"],
+      currentPage: 1,
+      perPage: 15,
+      filtro: "",
+      load_data: false,
     };
   },
   components: {
     Sidebar: () => import("@/components/Sidebar.vue"),
     TopNav: () => import("@/components/TopNav.vue"),
   },
+  methods: {
+    onLangsPageChange(toPage, fromPage) {
+      // handle here…
+      this.currentPage = toPage;
+      console.log(this.currentPage);
+    },
+    goPrev() {
+      console.log(this.currentPage);
+      if (this.currentPage >= 2) {
+        this.$refs.colaboradores.goToPage(this.currentPage--);
+      } else {
+        this.$refs.colaboradores.goToPage(1);
+      }
+    },
+    goNext() {
+      if (
+        this.currentPage <= Math.ceil(this.colaboradores.length / this.perPage)
+      ) {
+        this.$refs.colaboradores.goToPage(this.currentPage++);
+      } else {
+        this.$refs.colaboradores.goToPage(
+          Math.ceil(this.colaboradores.length / this.perPage)
+        );
+      }
+    },
+    filtrar() {
+      console.log(this.filtro);
+      let term = new RegExp(this.filtro, "i");
+      // this.colaboradores = this.colaboradores_const.filter(
+      //   (item) =>
+      //     term.test(item.nombres) ||
+      //     term.test(item.apellidos) ||
+      //     term.test(item.email)
+      // );
+      this.init_data();
+    },
+    init_data() {
+      this.load_data = true;
+      axios
+        .get(this.$url + "/listar_usuario_admin/" + this.filtro, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: this.$token,
+          },
+        })
+        .then((result) => {
+          this.colaboradores = result.data;
+          this.colaboradores_const = this.colaboradores;
+          this.load_data = false;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+  },
   beforeMount() {
-    axios
-      .get(this.$url + "/listar_usuario_admin", {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: this.$token,
-        },
-      })
-      .then((result) => {
-        this.colaboradores = result.data;
-        console.log(result.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    this.init_data();
   },
 };
 </script>

@@ -23,6 +23,11 @@ const routes = [
     component: ColaboradorCreate,
   },
   {
+    path: "/colaborador/edit/:id",
+    name: "colaborador-edit",
+    component: () => import("@/views/colaboradores/EditColaboradorApp.vue"),
+  },
+  {
     path: "/about",
     name: "about",
   },
