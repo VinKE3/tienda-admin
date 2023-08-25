@@ -23,7 +23,7 @@
                   <div class="col">
                     <!-- Nav -->
                     <ul class="nav nav-tabs nav-overflow header-tabs">
-                      <router-link to="/colaborador/index" class="nav-link">
+                      <router-link to="/colaborador" class="nav-link">
                         Todos los colaboradores
                       </router-link>
                       <li class="nav-item">
@@ -131,8 +131,6 @@
 </template>
 
 <script>
-import Sidebar from "@/components/Sidebar.vue";
-import TopNav from "@/components/TopNav.vue";
 import axios from "axios";
 
 export default {

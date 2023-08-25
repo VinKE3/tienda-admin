@@ -267,8 +267,6 @@
 </template>
 
 <script>
-import Sidebar from "@/components/Sidebar.vue";
-import TopNav from "@/components/TopNav.vue";
 import axios from "axios";
 export default {
   name: "IndexColaboradorApp",

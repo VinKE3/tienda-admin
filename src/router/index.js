@@ -16,7 +16,7 @@ const routes = [
     meta: { requiresAuth: false },
   },
   {
-    path: "/colaborador/index",
+    path: "/colaborador",
     name: "colaborador-index",
     component: ColaboradorIndex,
     meta: { requiresAuth: true },
@@ -40,8 +40,10 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
-    path: "/contact",
-    name: "contact",
+    path: "/producto/create",
+    name: "producto-create",
+    component: () => import("@/views/productos/CreateProductoApp.vue"),
+    meta: { requiresAuth: true },
   },
 ];
 
