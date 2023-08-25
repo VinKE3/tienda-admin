@@ -168,7 +168,7 @@ export default {
         .get(this.$url + "/obtener_usuario_admin/" + this.id, {
           headers: {
             "Content-Type": "application/json",
-            Authorization: this.$token,
+            Authorization: this.$store.state.token,
           },
         })
         .then((result) => {
@@ -225,7 +225,7 @@ export default {
           {
             headers: {
               "Content-Type": "application/json",
-              Authorization: this.$token,
+              Authorization: this.$store.state.token,
             },
           }
         )

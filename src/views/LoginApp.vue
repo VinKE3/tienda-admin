@@ -78,6 +78,7 @@
 
 <script>
 import axios from "axios";
+import store from "@/store/index";
 
 export default {
   name: "LoginApp",
@@ -122,10 +123,8 @@ export default {
           }
 
           if (result.data.token) {
-            localStorage.setItem("token", result.data.token);
-            localStorage.setItem("user", JSON.stringify(result.data.usuario));
-
-            this.$router.push({ name: "about" });
+            this.$store.dispatch("saveToken", result.data.token);
+            this.$router.push({ name: "dashboard" });
           }
         })
         .catch((error) => {

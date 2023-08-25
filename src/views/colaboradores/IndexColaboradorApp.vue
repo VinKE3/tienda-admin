@@ -329,7 +329,7 @@ export default {
         .get(this.$url + "/listar_usuario_admin/" + this.filtro, {
           headers: {
             "Content-Type": "application/json",
-            Authorization: this.$token,
+            Authorization: this.$store.state.token,
           },
         })
         .then((result) => {
