@@ -40,91 +40,98 @@
               </div>
             </div>
 
-            <div class="row">
-              <div class="col-12 col-md-6">
-                <!-- First name -->
-                <div class="form-group">
-                  <!-- Label -->
-                  <label class="form-label"> Nombres </label>
+            <template v-if="data">
+              <div>
+                <div class="row">
+                  <div class="col-12 col-md-6">
+                    <!-- First name -->
+                    <div class="form-group">
+                      <!-- Label -->
+                      <label class="form-label"> Nombres </label>
 
-                  <!-- Input -->
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="colaborador.nombres"
-                    placeholder="Nombres"
-                  />
+                      <!-- Input -->
+                      <input
+                        type="text"
+                        class="form-control"
+                        v-model="colaborador.nombres"
+                        placeholder="Nombres"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <!-- Last name -->
+                    <div class="form-group">
+                      <!-- Label -->
+                      <label class="form-label"> Apellidos </label>
+
+                      <!-- Input -->
+                      <input
+                        type="text"
+                        class="form-control"
+                        v-model="colaborador.apellidos"
+                        placeholder="Apellidos"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <!-- Email address -->
+                    <div class="form-group">
+                      <!-- Label -->
+                      <label class="mb-1"> Correo electrónico </label>
+
+                      <!-- Form text -->
+                      <small class="form-text text-muted">
+                        This contact will be shown to others publicly, so choose
+                        it carefully.
+                      </small>
+
+                      <!-- Input -->
+                      <input
+                        type="email"
+                        class="form-control"
+                        v-model="colaborador.email"
+                        placeholder="Email"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-md-6">
+                    <!-- Birthday -->
+                    <div class="form-group">
+                      <!-- Label -->
+                      <label class="form-label"> Cargo </label>
+
+                      <!-- Input -->
+                      <select
+                        name=""
+                        class="form-select"
+                        v-model="colaborador.rol"
+                      >
+                        <option disabled selected value="">
+                          Seleccione un cargo
+                        </option>
+                        <option value="Administrador">Administrador</option>
+                        <option value="Vendedor">Vendedor</option>
+                        <option value="Inventariado">Inventariado</option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
+                <hr class="my-5" />
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  v-on:click="validar()"
+                >
+                  Guardar Cambios
+                </button>
               </div>
-              <div class="col-12 col-md-6">
-                <!-- Last name -->
-                <div class="form-group">
-                  <!-- Label -->
-                  <label class="form-label"> Apellidos </label>
-
-                  <!-- Input -->
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="colaborador.apellidos"
-                    placeholder="Apellidos"
-                  />
-                </div>
+            </template>
+            <template v-if="!data">
+              <div>
+                <ErrorNotFound />
               </div>
-              <div class="col-12">
-                <!-- Email address -->
-                <div class="form-group">
-                  <!-- Label -->
-                  <label class="mb-1"> Correo electrónico </label>
-
-                  <!-- Form text -->
-                  <small class="form-text text-muted">
-                    This contact will be shown to others publicly, so choose it
-                    carefully.
-                  </small>
-
-                  <!-- Input -->
-                  <input
-                    type="email"
-                    class="form-control"
-                    v-model="colaborador.email"
-                    placeholder="Email"
-                  />
-                </div>
-              </div>
-
-              <div class="col-12 col-md-6">
-                <!-- Birthday -->
-                <div class="form-group">
-                  <!-- Label -->
-                  <label class="form-label"> Cargo </label>
-
-                  <!-- Input -->
-                  <select name="" class="form-select" v-model="colaborador.rol">
-                    <option disabled selected value="">
-                      Seleccione un cargo
-                    </option>
-                    <option value="Administrador">Administrador</option>
-                    <option value="Vendedor">Vendedor</option>
-                    <option value="Inventariado">Inventariado</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <!-- / .row -->
-
-            <!-- Divider -->
-
-            <hr class="my-5" />
-
-            <!-- Button -->
-            <button
-              type="button"
-              class="btn btn-primary"
-              v-on:click="validar()"
-            >
-              Crear Colaborador
-            </button>
+            </template>
 
             <br /><br />
           </div>
@@ -138,6 +145,7 @@
 <script>
 import Sidebar from "@/components/Sidebar.vue";
 import TopNav from "@/components/TopNav.vue";
+import ErrorNotFound from "@/components/ErrorNotFound.vue";
 import axios from "axios";
 
 export default {
@@ -150,9 +158,32 @@ export default {
         email: "",
         rol: "",
       },
+      id: this.$route.params.id,
+      data: false,
     };
   },
   methods: {
+    init_data() {
+      axios
+        .get(this.$url + "/obtener_usuario_admin/" + this.id, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: this.$token,
+          },
+        })
+        .then((result) => {
+          if (result.data == "") {
+            this.data = false;
+          } else {
+            this.data = true;
+            this.colaborador = result.data;
+          }
+          console.log(this.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
     validar() {
       if (!this.colaborador.nombres) {
         this.$notify({
@@ -183,44 +214,45 @@ export default {
           type: "error",
         });
       } else {
-        // this.crear_colaborador();
+        this.actualizar_colaborador();
       }
     },
-    // crear_colaborador() {
-    //   axios
-    //     .post(this.$url + "/registro_usuario_admin", this.colaborador, {
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //         Authorization: this.$token,
-    //       },
-    //     })
-    //     .then((result) => {
-    //       if (result.data.data == undefined) {
-    //         this.$notify({
-    //           group: "foo",
-    //           title: "Error",
-    //           text: result.data.message,
-    //           type: "error",
-    //         });
-    //       } else {
-    //         this.$notify({
-    //           group: "foo",
-    //           title: "Success",
-    //           text: "Colaborador creado correctamente",
-    //           type: "success",
-    //         });
-    //         this.$router.push({ name: "colaborador-index" });
-    //       }
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //     });
-    // },
+    actualizar_colaborador() {
+      axios
+        .put(
+          this.$url + "/actualizar_usuario_admin/" + this.id,
+          this.colaborador,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: this.$token,
+            },
+          }
+        )
+        .then((result) => {
+          this.$notify({
+            group: "foo",
+            title: "Success",
+            text: "Colaborador actualizado correctamente",
+            type: "success",
+          });
+          this.$router.push({ name: "colaborador-index" });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
   },
-  mounted() {},
+  mounted() {
+    console.log(this.id);
+  },
+  beforeMount() {
+    this.init_data();
+  },
   components: {
     TopNav: () => import("@/components/TopNav.vue"),
     Sidebar: () => import("@/components/Sidebar.vue"),
+    ErrorNotFound: () => import("@/components/ErrorNotFound.vue"),
   },
 };
 </script>

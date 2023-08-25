@@ -109,7 +109,6 @@
                       </thead>
 
                       <paginate
-                        v-if="!load_data"
                         tag="tbody"
                         ref="colaboradores"
                         name="colaboradores"
@@ -117,7 +116,10 @@
                         :per="perPage"
                         class="list fs-base"
                       >
-                        <tr v-for="item in paginated('colaboradores')">
+                        <tr
+                          v-if="!load_data"
+                          v-for="item in paginated('colaboradores')"
+                        >
                           <td>
                             <!-- Avatar -->
                             <div class="avatar avatar-xs align-middle me-2">
@@ -169,15 +171,34 @@
                                 <i class="fe fe-more-vertical"></i>
                               </a>
                               <div class="dropdown-menu dropdown-menu-end">
-                                <a href="#!" class="dropdown-item"> Action </a>
-                                <a href="#!" class="dropdown-item">
-                                  Another action
-                                </a>
-                                <a href="#!" class="dropdown-item">
-                                  Something else here
-                                </a>
+                                <router-link
+                                  :to="{
+                                    name: 'colaborador-edit',
+                                    params: { id: item._id },
+                                  }"
+                                  class="dropdown-item"
+                                >
+                                  Editar
+                                </router-link>
+                                <a
+                                  style="cursor: pointer"
+                                  class="dropdown-item"
+                                  v-b-modal="'delete-' + item._id"
+                                >
+                                  <span v-if="item.estado">Desactivar</span>
+                                  <span v-if="!item.estado">Activar</span></a
+                                >
                               </div>
                             </div>
+                            <b-modal
+                              centered
+                              :id="'delete-' + item._id"
+                              title="BootstrapVue"
+                              title-html="<h4 class='card-header-title'><b>Add a member</b></h4>"
+                              @ok="eliminar(item._id, !item.estado)"
+                            >
+                              <p class="my-4">{{ item._id }}</p>
+                            </b-modal>
                           </td>
                         </tr>
                       </paginate>
@@ -320,7 +341,30 @@ export default {
           console.log(error);
         });
     },
+    eliminar(id, estado) {
+      axios
+        .put(
+          this.$url + "/cambiar_estado_usuario_admin/" + id,
+          { estado: estado },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: this.$token,
+            },
+          }
+        )
+        .then((result) => {
+          this.init_data();
+          this.$notify({
+            group: "foo",
+            title: "SUCCESS",
+            text: "Se cambio el estado del colaborador",
+            type: "success",
+          });
+        });
+    },
   },
+
   beforeMount() {
     this.init_data();
   },
