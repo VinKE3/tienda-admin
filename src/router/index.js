@@ -51,6 +51,12 @@ const routes = [
     component: () => import("@/views/productos/CreateProductoApp.vue"),
     meta: { requiresAuth: true },
   },
+  {
+    path: "/producto/edit/:id",
+    name: "producto-edit",
+    component: () => import("@/views/productos/EditProductoApp.vue"),
+    meta: { requiresAuth: true },
+  },
 ];
 
 const router = new VueRouter({

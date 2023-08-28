@@ -16,7 +16,7 @@
                     <h6 class="header-pretitle">Productos</h6>
 
                     <!-- Title -->
-                    <h1 class="header-title">Nuevo producto</h1>
+                    <h1 class="header-title">Editar producto</h1>
                   </div>
                 </div>
                 <!-- / .row -->
@@ -24,11 +24,13 @@
                   <div class="col">
                     <!-- Nav -->
                     <ul class="nav nav-tabs nav-overflow header-tabs">
-                      <router-link class="nav-link" to="/producto">
-                        Todos los producto
-                      </router-link>
                       <li class="nav-item">
-                        <a class="nav-link active">Nuevo producto</a>
+                        <router-link class="nav-link" to="/producto"
+                          >Todos los productos</router-link
+                        >
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link active">Editar producto</a>
                       </li>
                     </ul>
                   </div>
@@ -133,6 +135,7 @@
                     <!-- Input -->
                     <input
                       type="number"
+                      readonly
                       class="form-control"
                       placeholder="Precio"
                       v-model="producto.precio"
@@ -242,7 +245,7 @@
 
               <!-- Button -->
               <button class="btn btn-primary" v-on:click="validar()">
-                Crear producto
+                Actualizar producto
               </button>
             </div>
           </div>
@@ -256,7 +259,7 @@
 <script>
 import axios from "axios";
 export default {
-  name: "CreateProductoApp",
+  name: "EditProductoApp",
   components: {
     Sidebar: () => import("@/components/Sidebar.vue"),
     TopNav: () => import("@/components/TopNav.vue"),
@@ -274,12 +277,25 @@ export default {
     };
   },
   methods: {
+    init_data() {
+      axios
+        .get(this.$url + "/obtener_producto_admin/" + this.$route.params.id, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: this.$store.state.token,
+          },
+        })
+        .then((result) => {
+          this.producto = result.data;
+          this.str_image =
+            this.$url + "/obtener_portada_producto/" + this.producto.portada;
+        });
+    },
     uploadImage($event) {
       var image;
       if ($event.target.files.length >= 1) {
         image = $event.target.files[0];
       }
-      console.log(image);
       if (image.size <= 1000000) {
         if (
           image.type == "image/jpeg" ||
@@ -297,6 +313,7 @@ export default {
             text: "El recurso debe ser imagen.",
             type: "error",
           });
+          this.portada = undefined;
         }
       } else {
         this.$notify({
@@ -305,6 +322,7 @@ export default {
           text: "La imagen debe pesar menos de 1MB",
           type: "error",
         });
+        this.portada = undefined;
       }
     },
     validar() {
@@ -322,13 +340,6 @@ export default {
           text: "Seleccione la categoria del producto",
           type: "error",
         });
-      } else if (!this.producto.precio) {
-        this.$notify({
-          group: "foo",
-          title: "ERROR",
-          text: "Ingrese el precio del producto",
-          type: "error",
-        });
       } else if (!this.producto.extracto) {
         this.$notify({
           group: "foo",
@@ -344,30 +355,58 @@ export default {
           type: "error",
         });
       } else {
-        this.registro();
+        this.actualizar();
       }
     },
-    registro() {
-      var fm = new FormData();
-      fm.append("titulo", this.producto.titulo);
-      fm.append("categoria", this.producto.categoria);
-      fm.append("precio", this.producto.precio);
-      fm.append("extracto", this.producto.extracto);
-      fm.append("estado", this.producto.estado);
-      fm.append("descuento", this.producto.descuento);
-      fm.append("portada", this.producto.portada); //IMAGEN
+    actualizar() {
+      var data;
+      var content = "";
+      if (this.portada != undefined) {
+        content = "multipart/form-data";
+        data = new FormData();
+        fm.append("titulo", this.producto.titulo);
+        fm.append("categoria", this.producto.categoria);
+        fm.append("extracto", this.producto.extracto);
+        fm.append("estado", this.producto.estado);
+        fm.append("descuento", this.producto.descuento);
+        fm.append("portada", this.producto.portada); //IMAGEN
+      } else {
+        content = "application/json";
+        data = this.producto;
+      }
 
       axios
-        .post(this.$url + "/registro_producto_admin", fm, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: this.$store.state.token,
-          },
-        })
+        .put(
+          this.$url + "/actualizar_producto_admin/" + this.$route.params.id,
+          data,
+          {
+            headers: {
+              "Content-Type": content,
+              Authorization: this.$store.state.token,
+            },
+          }
+        )
         .then((result) => {
-          console.log(result);
+          if (result.data.message) {
+            this.$notify({
+              group: "foo",
+              title: "ERROR",
+              text: result.data.message,
+              type: "error",
+            });
+          } else {
+            this.$notify({
+              group: "foo",
+              title: "SUCCESS",
+              text: "Se actualizó el producto.",
+              type: "success",
+            });
+          }
         });
     },
+  },
+  beforeMount() {
+    this.init_data();
   },
 };
 </script>
