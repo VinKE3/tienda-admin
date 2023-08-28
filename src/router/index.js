@@ -40,6 +40,12 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
+    path: "/producto",
+    name: "producto-index",
+    component: () => import("@/views/productos/IndexProductoApp.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
     path: "/producto/create",
     name: "producto-create",
     component: () => import("@/views/productos/CreateProductoApp.vue"),
