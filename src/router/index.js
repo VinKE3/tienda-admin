@@ -57,6 +57,12 @@ const routes = [
     component: () => import("@/views/productos/EditProductoApp.vue"),
     meta: { requiresAuth: true },
   },
+  {
+    path: "/ingreso/create",
+    name: "ingreso-create",
+    component: () => import("@/views/ingresos/CreateIngresoApp.vue"),
+    meta: { requiresAuth: true },
+  },
 ];
 
 const router = new VueRouter({

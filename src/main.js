@@ -8,16 +8,19 @@ import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
 import { ModalPlugin } from "bootstrap-vue";
 
 Vue.config.productionTip = false;
-Vue.prototype.$url = "https://back-vinke3.vercel.app/api";
+//? URL para la conexion con el backend en produccion
+// Vue.prototype.$url = "https://back-vinke3.vercel.app/api";
+//? URL para la conexion con el backend en desarrollo
+Vue.prototype.$url = "http://localhost:4201/api";
+Vue.prototype.$ganancia = 30;
 Vue.prototype.$token = localStorage.getItem("token");
 import "bootstrap-vue/dist/bootstrap-vue.css";
+import "vue-search-select/dist/VueSearchSelect.css";
 Vue.use(Notifications);
 Vue.use(VuePaginate);
 Vue.use(BootstrapVue);
 Vue.use(IconsPlugin);
 Vue.use(ModalPlugin);
-//?aca se puede
-//? aca no
 new Vue({
   router,
   store,

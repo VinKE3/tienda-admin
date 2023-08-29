@@ -365,10 +365,10 @@
                             centered
                             :id="'delete-' + item._id"
                             title="BootstrapVue"
-                            title-html="<h4 class='card-header-title'><b>Add a member</b></h4>"
+                            title-html="<h4 class='card-header-title'><b>Eliminar Variedad</b></h4>"
                             @ok="eliminar(item._id)"
                           >
-                            <p class="my-4">{{ item._id }}</p>
+                            <p class="my-4">{{ item.variedad }}</p>
                           </b-modal>
                         </div>
                       </div>
