@@ -8,7 +8,7 @@ import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
 import { ModalPlugin } from "bootstrap-vue";
 
 Vue.config.productionTip = false;
-Vue.prototype.$url = "http://localhost:4201/api";
+Vue.prototype.$url = "https://back-vinke3.vercel.app/api";
 Vue.prototype.$token = localStorage.getItem("token");
 import "bootstrap-vue/dist/bootstrap-vue.css";
 Vue.use(Notifications);
