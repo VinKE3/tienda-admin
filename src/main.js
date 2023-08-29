@@ -16,7 +16,8 @@ Vue.use(VuePaginate);
 Vue.use(BootstrapVue);
 Vue.use(IconsPlugin);
 Vue.use(ModalPlugin);
-
+//?aca se puede
+//? aca no
 new Vue({
   router,
   store,
