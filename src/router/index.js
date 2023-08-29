@@ -63,6 +63,12 @@ const routes = [
     component: () => import("@/views/ingresos/CreateIngresoApp.vue"),
     meta: { requiresAuth: true },
   },
+  {
+    path: "/producto/galeria/:id",
+    name: "producto-galeria",
+    component: () => import("@/views/productos/GaleriaProductoApp.vue"),
+    meta: { requiresAuth: true },
+  },
 ];
 
 const router = new VueRouter({

@@ -13,7 +13,7 @@
 
         <!-- Button -->
         <a href="index.html" class="btn btn-lg btn-primary text-white">
-          Return to your dashboard
+          Regresar al inicio
         </a>
       </div>
     </div>
