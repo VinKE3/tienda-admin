@@ -12,12 +12,10 @@
                 <div class="row align-items-center">
                   <div class="col">
                     <!-- Pretitle -->
-                    <h6 class="header-pretitle">Productos</h6>
+                    <h6 class="header-pretitle">Colaboradores</h6>
 
                     <!-- Title -->
-                    <h1 class="header-title">
-                      <b>Galeria de producto</b>
-                    </h1>
+                    <h1 class="header-title">Nuevo colaborador</h1>
                   </div>
                 </div>
                 <!-- / .row -->
@@ -26,124 +24,240 @@
                     <!-- Nav -->
                     <ul class="nav nav-tabs nav-overflow header-tabs">
                       <li class="nav-item">
-                        <router-link to="/producto" class="nav-link"
-                          >Todos los productos</router-link
-                        >
+                        <a class="nav-link active"> Todos los colaboradores </a>
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link active"> Galeria de producto </a>
+                        <router-link to="/colaborador/create" class="nav-link">
+                          Nuevo colaborador
+                        </router-link>
                       </li>
                     </ul>
                   </div>
                 </div>
               </div>
             </div>
-
-            <template v-if="load_data">
-              <div class="row">
-                <div class="col-12 text-center">
-                  <div class="spinner-border" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                  </div>
-                </div>
-              </div>
-            </template>
-
-            <template v-if="!load_data">
-              <div>
-                <div class="mb-7" v-if="data">
-                  <div class="row">
-                    <div class="col-12 col-md-12">
-                      <!-- Email address -->
-                      <div class="form-group">
-                        <!-- Label -->
-                        <label class="mb-1"> Imagen </label>
-
-                        <!-- Input -->
-                        <div class="input-group mb-3">
-                          <input
-                            type="file"
-                            id="input_file"
-                            class="form-control"
-                            placeholder="Selecciona la imagen"
-                            v-on:change="uploadImage($event)"
-                          />
-                          <button
-                            class="btn btn-primary"
-                            v-on:click="subir_imagen()"
+            <div class="tab-content">
+              <div
+                class="tab-pane fade show active"
+                id="contactsListPane"
+                role="tabpanel"
+                aria-labelledby="contactsListTab"
+              >
+                <!-- Card -->
+                <div
+                  class="card"
+                  data-list='{"valueNames": ["item-name", "item-title", "item-email", "item-phone", "item-score", "item-company"], "page": 10, "pagination": {"paginationClass": "list-pagination"}}'
+                  id="contactsList"
+                >
+                  <div class="card-header">
+                    <div class="row align-items-center">
+                      <div class="col">
+                        <!-- Form -->
+                        <form>
+                          <div
+                            class="input-group input-group-flush input-group-merge input-group-reverse"
                           >
-                            <i class="fe fe-upload"></i>
-                          </button>
-                        </div>
-                        <!-- Form text -->
-                        <small class="form-text text-muted">
-                          Subo un maximo de 5 imagenes para la galeria del
-                          producto.
-                        </small>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- / .row -->
-
-                  <div class="row listAlias" v-if="!load_galeria">
-                    <div
-                      class="col-12 col-md-6 col-xl-4"
-                      v-for="item in galeria"
-                    >
-                      <div class="card">
-                        <a href="project-overview.html">
-                          <img
-                            :src="
-                              $url + '/obtener_galeria_producto/' + item.imagen
-                            "
-                            alt="..."
-                            class="card-img-top"
-                          />
-                        </a>
-                        <div class="card-footer card-footer-boxed">
-                          <div class="row">
-                            <div class="col text-center">
-                              <a
-                                v-b-modal="'delete-' + item._id"
-                                style="cursor: pointer"
-                                class="text-danger"
-                                >Eliminar imagen</a
-                              >
-                              <b-modal
-                                centered
-                                :id="'delete-' + item._id"
-                                title="BootstrapVue"
-                                title-html="<h4 class='card-header-title'><b>Eliminar imagen</b></h4>"
-                                @ok="eliminar(item._id)"
-                              >
-                                <p class="my-4">{{ item._id }}</p>
-                              </b-modal>
-                            </div>
+                            <input
+                              class="form-control list-search"
+                              type="search"
+                              placeholder="Buscar Colaborador"
+                              v-model="filtro"
+                            />
+                            <span class="input-group-text">
+                              <i class="fe fe-search"></i>
+                            </span>
                           </div>
-                          <!-- / .row -->
-                        </div>
+                        </form>
+                      </div>
+
+                      <div class="col-auto">
+                        <!-- Dropdown -->
+                        <button
+                          class="btn btn-sm btn-white"
+                          type="button"
+                          v-on:click="filtrar()"
+                        >
+                          <i class="fe fe-sliders me-1"></i> Filter
+                          <span class="badge bg-primary ms-1 d-none">0</span>
+                        </button>
                       </div>
                     </div>
+                    <!-- / .row -->
                   </div>
+                  <div class="table-responsive">
+                    <table
+                      class="table table-sm table-hover table-nowrap card-table"
+                    >
+                      <thead>
+                        <tr>
+                          <th>
+                            <a class="list-sort text-muted">Nombres</a>
+                          </th>
+                          <th>
+                            <a class="list-sort text-muted">Rol</a>
+                          </th>
+                          <th>
+                            <a class="list-sort text-muted">Email</a>
+                          </th>
+                          <th>
+                            <a class="list-sort text-muted">Estado</a>
+                          </th>
+                          <th>
+                            <a class="list-sort text-muted">Acciones</a>
+                          </th>
+                        </tr>
+                      </thead>
 
-                  <div class="row mt-5" v-if="load_galeria">
-                    <div class="col-12 text-center">
-                      <img
-                        src="/assets/img/reloj.gif"
-                        alt=""
-                        style="width: 80px"
-                      />
-                    </div>
+                      <paginate
+                        tag="tbody"
+                        ref="colaboradores"
+                        name="colaboradores"
+                        :list="colaboradores"
+                        :per="perPage"
+                        class="list fs-base"
+                      >
+                        <tr
+                          v-if="!load_data"
+                          v-for="item in paginated('colaboradores')"
+                        >
+                          <td>
+                            <!-- Avatar -->
+                            <div class="avatar avatar-xs align-middle me-2">
+                              <img
+                                class="avatar-img rounded-circle"
+                                src="/assets/img/avatar-1.jpg"
+                                alt="..."
+                              />
+                            </div>
+                            <a class="item-name text-reset"
+                              >{{ item.nombres }} {{ item.apellidos }}</a
+                            >
+                          </td>
+                          <td>
+                            <!-- Text -->
+                            <span class="item-title">{{ item.rol }}</span>
+                          </td>
+                          <td>
+                            <!-- Email -->
+                            <a class="item-email text-reset">{{
+                              item.email
+                            }}</a>
+                          </td>
+
+                          <td>
+                            <!-- Badge -->
+                            <span
+                              v-if="!item.estado"
+                              class="item-score badge bg-danger-soft"
+                              >Desactivado</span
+                            >
+                            <span
+                              v-if="item.estado"
+                              class="item-score badge bg-success-soft"
+                              >Activado</span
+                            >
+                          </td>
+                          <td class="text-end">
+                            <!-- Dropdown -->
+                            <div class="dropdown">
+                              <a
+                                class="dropdown-ellipses dropdown-toggle"
+                                href="#"
+                                role="button"
+                                data-bs-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                              >
+                                <i class="fe fe-more-vertical"></i>
+                              </a>
+                              <div class="dropdown-menu dropdown-menu-end">
+                                <router-link
+                                  :to="{
+                                    name: 'colaborador-edit',
+                                    params: { id: item._id },
+                                  }"
+                                  class="dropdown-item"
+                                >
+                                  Editar
+                                </router-link>
+                                <a
+                                  style="cursor: pointer"
+                                  class="dropdown-item"
+                                  v-b-modal="'delete-' + item._id"
+                                >
+                                  <span v-if="item.estado">Desactivar</span>
+                                  <span v-if="!item.estado">Activar</span></a
+                                >
+                              </div>
+                            </div>
+                            <b-modal
+                              centered
+                              :id="'delete-' + item._id"
+                              title="BootstrapVue"
+                              title-html="<h4 class='card-header-title'><b>Add a member</b></h4>"
+                              @ok="eliminar(item._id, !item.estado)"
+                            >
+                              <p class="my-4">{{ item._id }}</p>
+                            </b-modal>
+                          </td>
+                        </tr>
+                      </paginate>
+                      <tr v-if="load_data">
+                        <td colspan="5" class="text-center">
+                          <div class="spinner-border mt-5 mb-5" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div class="card-footer d-flex justify-content-between">
+                    <!-- Pagination (prev) -->
+                    <ul
+                      class="list-pagination-prev pagination pagination-tabs card-pagination"
+                    >
+                      <li class="page-item">
+                        <a
+                          class="page-link ps-0 pe-4 border-end"
+                          v-on:click="goPrev()"
+                        >
+                          <i class="fe fe-arrow-left me-1"></i> Prev
+                        </a>
+                      </li>
+                    </ul>
+
+                    <!-- Pagination -->
+                    <paginate-links
+                      @change="onLangsPageChange"
+                      for="colaboradores"
+                      :classes="{
+                        ul: [
+                          'list-pagination',
+                          'pagination',
+                          'pagination-tabs',
+                          'card-pagination',
+                        ],
+                        a: ['page'],
+                      }"
+                    ></paginate-links>
+
+                    <!-- Pagination (next) -->
+                    <ul
+                      class="list-pagination-next pagination pagination-tabs card-pagination"
+                    >
+                      <li class="page-item">
+                        <a
+                          class="page-link ps-4 pe-0 border-start"
+                          v-on:click="goNext()"
+                        >
+                          Next <i class="fe fe-arrow-right ms-1"></i>
+                        </a>
+                      </li>
+                    </ul>
                   </div>
                 </div>
-
-                <template v-if="!data">
-                  <div>
-                    <ErrorNotFound />
-                  </div>
-                </template>
               </div>
-            </template>
+            </div>
           </div>
         </div>
         <!-- / .row -->
@@ -225,38 +339,32 @@ export default {
           console.log(error);
         });
     },
-    eliminar(id) {
+    eliminar(id, estado) {
       axios
-        .delete(this.$url + "/eliminar_galeria_producto_admin/" + id, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: this.$store.state.token,
-          },
-        })
-        .then((result) => {
-          if (result.data.message) {
-            this.$notify({
-              group: "foo",
-              title: "SUCCESS",
-              text: result.data.message,
-              type: "error",
-            });
-          } else {
-            this.$notify({
-              group: "foo",
-              title: "SUCCESS",
-              text: "Se eliminó la imagen.",
-              type: "success",
-            });
-            this.init_galeria();
+        .put(
+          this.$url + "/cambiar_estado_usuario_admin/" + id,
+          { estado: estado },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: this.$token,
+            },
           }
+        )
+        .then((result) => {
+          this.init_data();
+          this.$notify({
+            group: "foo",
+            title: "SUCCESS",
+            text: "Se cambio el estado del colaborador",
+            type: "success",
+          });
         });
     },
   },
 
   beforeMount() {
     this.init_data();
-    this.init_galeria();
   },
 };
 </script>
